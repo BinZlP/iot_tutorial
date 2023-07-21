@@ -1,0 +1,39 @@
+<script>
+	function helpButtonClick() {
+		var helpBox = document.getElementById("helpBox");
+		var helpButton = document.getElementById("helpButton");
+		if (helpBox.style.display === "none") {
+			helpBox.style.display = "block";
+			helpButton.textContent = "도움말 닫기";
+		} else {
+			helpBox.style.display = "none";
+			helpButton.textContent = "도움말 보기";
+		}
+	}
+</script>
+
+<button onclick="helpButtonClick()" id="helpButton" class="btn btn-secondary">도움말 보기</button>
+	<div id="helpBox" style="display: none">
+		<p>
+			각 row의 첫 번째 column이 나타내는 색은 problem의 severity를 나타냅니다. <br/>
+			<font color="yellow">◼</font> S2: Warning, <font color="orange">◼</font>S3: Average, <font color="magenta">◼</font>S4: High, <font color="red">◼</font>S5: Disaster<br/>
+
+			<br/>
+			앞으로 표시하고 싶지 않은 problem은 해당 row를 클릭하고 'Suppress all selected issues' 버튼을 클릭하면 더 이상 issue dashboard에 표시되지 않습니다.<br/>
+			Issue dashboard에 다시 표시하고 싶을 때는 suppressed problems에서 선택해 복구합니다.<br/>
+			(참고: 여기서의 suppress는 Zabbix에 직접 반영되지 않으며, <b>Zabbix로부터 문제가 해결되었다는 메시지를 받아도 suppressed problem 목록에서 제거되지 않습니다!</b>)<br/>
+			
+			<br/>
+			검색은 Hostname, Problem, Severity 등 모든 항목으로 가능합니다.<br/>
+			<b>Ex)</b> DEV zone에서 발생한 problem만 검색: .dev / Severity가 Disaster인 problem만 검색: S5<br/>
+
+			<br/>
+			여러 조건을 한 번에 적용하고 싶으면 ' '(space)를 사용합니다.<br/>
+			<b>Ex) </b> goormos-slave 인스턴스 중 zombie 프로세스 관련 problem을 검색: goormos-slave zombie
+
+			<br/>
+		</p>
+	</div>
+<br/>
+	
+<br/>
