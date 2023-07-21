@@ -1,18 +1,41 @@
-from flask import Flask
-import threading
+from flask import Flask, render_template, redirect, url_for
 import server_runtime
 
 app = Flask(__name__)
 
+# MY_APP_NAME="Home Monitor"
+# DASHBOARD_PAGE_STRING="STATUS"
+# SENSORS_PAGE_STRING="SENSOR VALUES"
+
+CONFIGS={
+    "MY_APP_NAME": "Home Monitor",
+    "DASHBOARD_PAGE_STRING": "STATUS",
+    "SENSORS_PAGE_STRING": "SENSOR VALUES"
+}
+
+SENSOR_VALUES={
+    "A": "10",
+    "B": "20",
+    "C": "30"
+}
 
 @app.route('/')
 def index():
-    return "Server runtime: "+str(server_runtime.runtime)+"s"
+    return render_template('index.html', app_name=CONFIGS["MY_APP_NAME"], menu_string=CONFIGS["DASHBOARD_PAGE_STRING"])
+
+@app.route('/sensor_values')
+def sensor_values():
+    return render_template('index.html', app_name=CONFIGS["MY_APP_NAME"], menu_string=CONFIGS["SENSORS_PAGE_STRING"], test="Hello!", **SENSOR_VALUES)
+
+@app.route('/reset')
+def reset():
+    server_runtime.reset_runtime()
+    return redirect(url_for('/runtime'))
 
 # Normal routing
-@app.route('/board')
+@app.route('/runtime')
 def board():
-    return "normal board"
+    return "Server runtime: "+str(server_runtime.runtime)+"s"
 
 # Get a parameter from URL
 @app.route('/board/<article_idx>')
@@ -26,4 +49,4 @@ def boards(page):
     return "Page: "+page
 
 
-app.run(host="192.168.35.206",port=5000)
+app.run(host="localhost",port=8080)
