@@ -12,6 +12,16 @@
 	}
 </script>
 
+
+<h1>현재 우리집은 
+{% if is_home_safe == True %}
+  <b style="color:green">안전</b>
+{% else %}
+  <b style="color:red">위험</b>
+{% endif %}
+합니다.</h1>
+<br/>
+
 <button onclick="helpButtonClick()" id="helpButton" class="btn btn-secondary">도움말 보기</button>
 	<div id="helpBox" style="display: none">
 		<p>

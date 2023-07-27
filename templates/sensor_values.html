@@ -1,22 +1,44 @@
 <table class="table table-hover">
 <thead>
     <tr>
-    <th>Sensor Name</th>
+    <th>Item</th>
     <th>Value</th>
     <th>Note</th>
     </tr>
 </thead>
 <tbody>
     <tr>
+    <td>외출시간</td>
+    <td>{{timer_value}} 초</td>
+    <td></td>
+    </tr>
+
+
+    <tr>
+    <td>LED</td>
+    <td>{{led_status}}</td>
+    <td>
+    {% if led_status == "ON" %}
+    <button class="btn btn-danger" onclick="location.href='/led_switch'">OFF</button>
+    {% else %}
+    <button class="btn btn-success" onclick="location.href='/led_switch'">ON</button>
+    {% endif %}
+    </td>
+    </tr>
+
+
+    <tr>
     <td>A</td>
     <td>{{A}}</td>
     <td></td>
     </tr>
+
     <tr>
     <td>B</td>
     <td>{{B}}</td>
     <td>Button</td>
     </tr>
+
     <tr>
     <td>C</td>
     <td>{{C}}</td>
