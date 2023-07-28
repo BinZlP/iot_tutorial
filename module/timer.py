@@ -28,7 +28,6 @@ def start():
 
 def stop():
   global runtime, stop_flag
-  runtime = 0
   stop_flag = True
   t.join()
 
