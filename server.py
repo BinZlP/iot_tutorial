@@ -3,8 +3,21 @@ import module.timer as timer
 import atexit
 import RPi.GPIO as GPIO
 import module.led as led
+import module.button as button
+import module.buzzer as buzzer
+import module.passive_buzzer as passive_buzzer
+import module.flame_sensor as flame
+import module.ultrasonic as ultrasonic
 
 APP_PORT = 8080
+
+LED_PIN = led.DEFAULT_LED_PIN
+BUTTON_PIN = button.DEFAULT_BUTTON_PIN
+BUZZER_PIN = buzzer.DEFAULT_BUZZER_PIN
+PASSIVE_BUZZER_PIN = passive_buzzer.DEFAULT_PASSIVE_BUZZER_PIN
+FLAME_PIN = flame.DEFAULT_FLAME_PIN
+ULTRASONIC_TRIG_PIN = ultrasonic.DEFAULT_TRIG_PIN
+ULTRASONIC_ECHO_PIN = ultrasonic.DEFAULT_ECHO_PIN
 
 app = Flask(__name__)
 
@@ -14,21 +27,40 @@ CONFIGS={
     "SENSORS_PAGE_STRING": "SENSOR VALUES"
 }
 
+
 SENSOR_VALUES={
     "A": "10",
     "B": "20",
     "C": "30",
 }
 
+
+######## Please complete this function #########
+def is_our_home_safe():
+    return True
+
+
 @app.route('/')
 def index():
-    return render_template('index.html', app_name=CONFIGS["MY_APP_NAME"], menu_string=CONFIGS["DASHBOARD_PAGE_STRING"])
+    render_option = {
+        "app_name": CONFIGS["MY_APP_NAME"],
+        "menu_string": CONFIGS["DASHBOARD_PAGE_STRING"],
+        "is_home_safe": is_our_home_safe(),
+        "button_push_count": button.pressed_count
+    }
+    return render_template('index.html', **render_option)
 
 @app.route('/sensor_values')
 def sensor_values():
+    render_option = {
+        "app_name": CONFIGS["MY_APP_NAME"],
+        "menu_string": CONFIGS["SENSORS_PAGE_STRING"],
+        "test": "Hello!"
+    }
+    print(render_option)
     SENSOR_VALUES["timer_value"] = timer.get()
     SENSOR_VALUES["led_status"] = led.status
-    return render_template('index.html', app_name=CONFIGS["MY_APP_NAME"], menu_string=CONFIGS["SENSORS_PAGE_STRING"], test="Hello!", **SENSOR_VALUES)
+    return render_template('index.html', **render_option, **SENSOR_VALUES)
 
 # Normal routing
 @app.route('/runtime')
@@ -53,6 +85,11 @@ def led_switch():
     else:
         return "<script> alert('LED를 먼저 초기화해주세요.'); location.href=\"/\"; </script>"
 
+# Buzzer song
+@app.route('/sing')
+def sing_with_buzzer():
+    passive_buzzer.play_song()
+    return redirect(url_for('sensor_values'))
 
 # Get a parameter from URL
 @app.route('/board/<article_idx>')
@@ -66,15 +103,21 @@ def boards(page):
     return "Page: "+page
 
 
+# Register shutdown event handler
 def cleanup_gpio():
     GPIO.cleanup()
 
-
-# Register shutdown event handler
 atexit.register(cleanup_gpio)
 
-# Server start
+# Initialize sensors
 timer.start()
 GPIO.setmode(GPIO.BCM)
-led.init(17)
+led.init(LED_PIN)
+button.init(BUTTON_PIN)
+buzzer.init(BUZZER_PIN)
+passive_buzzer.init(PASSIVE_BUZZER_PIN)
+flame.init(FLAME_PIN)
+ultrasonic.init(trig=ULTRASONIC_TRIG_PIN, echo=ULTRASONIC_ECHO_PIN)
+
+# Server start
 app.run(host="192.168.35.201", port=APP_PORT, debug=True)
