@@ -1,0 +1,15 @@
+<h1>현재 우리집은 
+{% if is_home_safe == True %}
+  <b style="color:green">안전</b>
+{% else %}
+  <b style="color:red">위험</b>
+{% endif %}
+합니다.</h1>
+<br/>
+<br/>
+
+<h2>
+  <img src="https://cdn-icons-png.flaticon.com/512/5517/5517999.png" width="100">
+  초인종 눌린 횟수: {{ button_push_count }} 회
+</h2>	
+<br/>
